@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESPN Fantasy Baseball Stats</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- League Setup Section -->
+        <section id="leagueSetup" class="setup-section">
+            <div class="container">
+                <header class="app-header">
+                    <h1>⚾ ESPN Fantasy Baseball Stats ⚾</h1>
+                    <p>Track your league's performance from the diamond to the dashboard</p>
+                </header>
+                
+                <form id="leagueForm" class="credential-form">
+                    <div class="form-group">
+                        <label for="leagueId">
+                            League ID <span class="required">*</span>
+                            <span class="help-icon" data-tooltip="league-id">?</span>
+                        </label>
+                        <input type="text" id="leagueId" name="leagueId" required placeholder="e.g., 1363308126">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="year">
+                            Season Year <span class="required">*</span>
+                        </label>
+                        <input type="number" id="year" name="year" required placeholder="2025" min="2020" max="2030">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="swid">
+                            SWID <span class="optional">(for private leagues)</span>
+                            <span class="help-icon" data-tooltip="swid">?</span>
+                        </label>
+                        <input type="text" id="swid" name="swid" placeholder="{12345678-ABCD-EFGH-IJKL-123456789012}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="espnS2">
+                            ESPN_S2 <span class="optional">(for private leagues)</span>
+                            <span class="help-icon" data-tooltip="espn-s2">?</span>
+                        </label>
+                        <textarea id="espnS2" name="espnS2" placeholder="Long session token..."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Load League Data</button>
+                        <button type="button" id="testCredentials" class="btn-secondary">Test Credentials</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="dashboard hidden">
+            <header class="dashboard-header">
+                <div class="header-content">
+                    <h2 id="leagueName">League Dashboard</h2>
+                    <p id="tabSubtitle" class="tab-subtitle">View team rankings and standings</p>
+                </div>
+                <nav class="tab-nav">
+                    <button class="tab-btn active" data-tab="standings">Standings</button>
+                    <button class="tab-btn" data-tab="stats">Team Stats</button>
+                    <button class="tab-btn" data-tab="rosters">Rosters</button>
+                </nav>
+            </header>
+
+            <!-- Standings Tab -->
+            <div id="standings-tab" class="tab-content active">
+                <div class="standings-section">
+                    <div class="table-responsive">
+                        <table class="standings-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Team</th>
+                                    <th>W</th>
+                                    <th>L</th>
+                                    <th>T</th>
+                                    <th>Win %</th>
+                                    <th>GB</th>
+                                </tr>
+                            </thead>
+                            <tbody id="standingsTableBody">
+                                <!-- Populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Tab -->
+            <div id="stats-tab" class="tab-content">
+                <div class="stats-section">
+                    <div id="statsContent">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <h4>League Leaders</h4>
+                                <div id="leagueLeaders">
+                                    <!-- Populated by JavaScript -->
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <h4>Category Averages</h4>
+                                <div id="categoryAverages">
+                                    <!-- Populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rosters Tab -->
+            <div id="rosters-tab" class="tab-content">
+                <div class="roster-section">
+                    <div class="team-selector">
+                        <label for="teamSelect">Select Team:</label>
+                        <select id="teamSelect">
+                            <option value="">Choose a team...</option>
+                        </select>
+                    </div>
+                    <div id="rosterContent" class="roster-content">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Loading Indicator -->
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Loading league data...</p>
+        </div>
+
+        <!-- Error Display -->
+        <div id="error" class="error-message hidden">
+            <div class="error-content">
+                <h3>Error</h3>
+                <p id="errorText"></p>
+                <button onclick="hideError()" class="btn-secondary">Close</button>
+            </div>
+        </div>
+
+        <!-- Help Modal -->
+        <div id="helpModal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="helpTitle">Help</h3>
+                    <button onclick="closeModal('helpModal')" class="close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="helpContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

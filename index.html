@@ -63,15 +63,18 @@
         <!-- Dashboard Section -->
         <section id="dashboard" class="dashboard hidden">
             <header class="dashboard-header">
-                <div class="header-content">
-                    <h2 id="leagueName">League Dashboard</h2>
-                    <p id="tabSubtitle" class="tab-subtitle">View team rankings and standings</p>
+                <div class="header-flex">
+                    <div class="header-left">
+                        <h2 id="leagueName">League Dashboard</h2>
+                        <p id="tabSubtitle" class="tab-subtitle">View team rankings and standings</p>
+                    </div>
+                    <nav class="tab-nav">
+                        <button class="tab-btn active" data-tab="standings">Standings</button>
+                        <button class="tab-btn" data-tab="stats">League Report</button>
+                        <button class="tab-btn" data-tab="rosters">Rosters</button>
+                        <button class="tab-btn" data-tab="matchups">Matchup Simulator</button>
+                    </nav>
                 </div>
-                <nav class="tab-nav">
-                    <button class="tab-btn active" data-tab="standings">Standings</button>
-                    <button class="tab-btn" data-tab="stats">League Report</button>
-                    <button class="tab-btn" data-tab="rosters">Rosters</button>
-                </nav>
             </header>
 
             <!-- Standings Tab -->
@@ -131,6 +134,33 @@
                     </div>
                     <div id="rosterContent" class="roster-content">
                         <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Matchup Simulator Tab -->
+            <div id="matchups-tab" class="tab-content">
+                <div class="matchups-section">
+                    <div class="matchup-controls">
+                        <div class="team-selectors">
+                            <div class="team-select-group">
+                                <label for="team1Select">Team 1:</label>
+                                <select id="team1Select">
+                                    <option value="">Choose first team...</option>
+                                </select>
+                            </div>
+                            <div class="vs-divider">VS</div>
+                            <div class="team-select-group">
+                                <label for="team2Select">Team 2:</label>
+                                <select id="team2Select">
+                                    <option value="">Choose second team...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button id="compareTeams" class="compare-btn">Compare Teams</button>
+                    </div>
+                    <div id="matchupResults" class="matchup-results">
+                        <p>Select two teams to compare their season averages across all categories.</p>
                     </div>
                 </div>
             </div>

@@ -152,6 +152,64 @@ app.get('/api/test-auth/:leagueId/:year', async (req, res) => {
     }
 });
 
+// Get weekly matchup data for categories analysis
+app.get('/api/matchups/:leagueId/:year', async (req, res) => {
+    const { leagueId, year } = req.params;
+    const { swid, espnS2, week } = req.query;
+
+    try {
+        let workingCookie = null;
+        
+        if (swid && espnS2) {
+            try {
+                workingCookie = await findWorkingCookieFormat(leagueId, year, swid, espnS2);
+            } catch (cookieError) {
+                console.log('Cookie authentication failed for matchups, trying without auth');
+            }
+        }
+
+        // Get weekly matchup data with detailed scoring information
+        let url = `https://lm-api-reads.fantasy.espn.com/apis/v3/games/flb/seasons/${year}/segments/0/leagues/${leagueId}?view=mMatchup&view=mMatchupScore&view=mScoreboard&view=mBoxscore&view=mTeam&view=mRoster&view=mSettings`;
+        
+        if (week) {
+            url += `&scoringPeriodId=${week}`;
+        } else {
+            // Get all weeks - typically week 1-24 for baseball
+            url += `&scoringPeriodId=1&scoringPeriodId=2&scoringPeriodId=3&scoringPeriodId=4&scoringPeriodId=5&scoringPeriodId=6&scoringPeriodId=7&scoringPeriodId=8&scoringPeriodId=9&scoringPeriodId=10&scoringPeriodId=11&scoringPeriodId=12&scoringPeriodId=13&scoringPeriodId=14&scoringPeriodId=15&scoringPeriodId=16&scoringPeriodId=17&scoringPeriodId=18&scoringPeriodId=19&scoringPeriodId=20&scoringPeriodId=21&scoringPeriodId=22&scoringPeriodId=23&scoringPeriodId=24`;
+        }
+        
+        const headers = {
+            'Accept': 'application/json',
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36',
+            'Referer': 'https://fantasy.espn.com/',
+            'Origin': 'https://fantasy.espn.com'
+        };
+
+        if (workingCookie) {
+            headers['Cookie'] = workingCookie;
+        }
+
+        console.log('Fetching matchup data from:', url);
+        const response = await fetch(url, { headers });
+
+        if (!response.ok) {
+            throw new Error(`ESPN API returned ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('Successfully fetched matchup data');
+        
+        res.json(data);
+
+    } catch (error) {
+        console.error('Server error:', error);
+        res.status(500).json({ 
+            error: 'Server error', 
+            message: error.message
+        });
+    }
+});
+
 // Get roster data for a specific team
 app.get('/api/roster/:leagueId/:year/:teamId', async (req, res) => {
     const { leagueId, year, teamId } = req.params;
